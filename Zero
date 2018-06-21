@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+ 
+int time = 0;
+int link[15]={0};
+int signal[20][15]={0};
+ 
+void connector(int a, int b, int a0, int num)
+{
+    int i,j;
+    int res_zero = 0, order=b-1;
+ 
+    if(b<num)
+    {
+        for(i=1; i<=3; i++)
+        {
+            if(i==1)
+            {
+                res_zero = a + b;
+                link[order]=i;
+                connector(res_zero, b+1, a, num);
+            }
+            else if(i==2)
+            {
+                res_zero = a - b;
+                link[order]=i;
+                connector(res_zero, b+1, a, num);
+            }
+            else
+            {
+                if(link[order-1]==1)
+                    res_zero = a0 + (b-1)*10 + b;
+                else if(link[order-1]==2)
+                    res_zero = a0 - (b-1)*10 - b;
+                else if(link[order-1]==3)
+                    res_zero = a0 + (a-a0)*10 +b;
+                else
+                    res_zero = a*10 +b;
+                link[order]=i;
+                connector(res_zero, b+1, a0, num);
+            }
+        }
+    }
+    else
+    {
+       if(a==0)
+       {
+           time++;
+           if(time<20)
+               for(i=1; i<=num-1; i++)
+               {
+                   signal[time][i]=link[i];
+               }
+       }
+    }
+ 
+}
+ 
+int main()
+{
+    int n, first, second;
+    int i,j;
+ 
+    first=1; second=2;
+    scanf("%d", &n);
+    connector(first, second, 0, n+1);
+    for(i=1; i<=time; i++)
+    {
+        for(j=1; j<n; j++)
+        {
+            printf("%d ", j);
+            if(signal[i][j]==1){ printf("+ ");}
+            if(signal[i][j]==2){ printf("- ");}
+            if(signal[i][j]==3){ printf(". ");}
+        }printf("%d\n", n);
+    }
+    printf("%d\n", time);
+    return 0;
+}
